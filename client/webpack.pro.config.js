@@ -1,12 +1,12 @@
 module.exports = {
   entry: [
-    './client/src/index.js'
+    './src/index.js'
   ],
   output: {
-    path: __dirname,
+    path: __dirname+'/src/',
     publicPath: '/src/',
     filename: 'bundle.js'
-  },
+},
   module: {
     loaders: [{
       exclude: /node_modules/,

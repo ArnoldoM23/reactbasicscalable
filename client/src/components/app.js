@@ -1,9 +1,7 @@
+
 import React, { Component } from 'react';
-
-
-
-class App extends Component {
-
+console.log("hello")
+export default class App extends Component {
 	render(){
 		return (
 			<div>

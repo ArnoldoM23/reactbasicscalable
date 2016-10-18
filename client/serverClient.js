@@ -15,6 +15,9 @@ app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(express.static(publicPath));
 
+app.get('*', (req,res) =>{
+	res.sendFile(path.resolve(__dirname, 'src', 'index.html'))
+})
 
 const server = http.createServer(app);
 
