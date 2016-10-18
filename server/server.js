@@ -10,6 +10,8 @@ const router = require('./routes/routes');
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 // app.use(cors());
+
+app.use(express.static('../client/'));
 router(app);
 
 
