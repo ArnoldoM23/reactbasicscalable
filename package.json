@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "",
   "scripts": {
-    "start": "webpack --config ./client/webpack.pro.config.js && node ./server/server.js",
+    "start": "webpack --config ./client/webpack.pro.config.js && node ./client/serverClient.js",
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
     "test:watch": "npm run test -- --watch"
   },
