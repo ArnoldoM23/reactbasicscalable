@@ -7,7 +7,7 @@ export default class App extends Component {
 		return (
 			<div>
 				<Header />
-				<h4>Testing the basic setup</h4>
+				{ this.props.children }
 			</div>
 		)
 	}
