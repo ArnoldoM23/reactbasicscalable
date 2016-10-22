@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const port = process.env.PORT || 3090;
 const cors = require('cors');
 const router = require('./routes/routes');
+const passport = require('passport');
 
 mongoose.connect('mongodb://localhost:auth/auth');
 

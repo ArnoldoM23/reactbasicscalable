@@ -9,6 +9,9 @@ class SignIn extends Component {
 		this.props.signIn({ email, password });
 	}
 
+	handleFacebookLogin(){
+		this.props.facebookLogin();
+	}
 
 	renderAlert(){
 		if(this.props.errorMessage){
@@ -34,6 +37,7 @@ class SignIn extends Component {
 					<input {...password } type='password' className='form-control' />
 				</fieldset>
 				<button action='submit' className='btn btn-primary'>Sign In</button>
+				<button onClick={this.handleFacebookLogin()}>Facebook Login</button>
 			</form>
 		);
 	}

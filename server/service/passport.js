@@ -32,7 +32,7 @@ const jwtOptions = {
 
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done){
 	// find a user in the database by id.
-	User.findById(payload.sub, function(err, user){
+	User.findById(payload._id, function(err, user){
 		if (err) { return done(errr);}
 
 		return user ? done(null, user) : done(null, false)
@@ -71,3 +71,4 @@ const facebookLogin = new FacebookStrategy({
 
 passport.use(localLogin);
 passport.use(jwtLogin);
+passport.use(facebookLogin)

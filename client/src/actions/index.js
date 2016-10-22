@@ -21,6 +21,15 @@ export function signUp({email, password}){
 			})
 	};
 };
+
+export function facebookLogin(){
+	return function(dispatch){
+		axios.get(`${ROOT_URL}/auth/facebook`).
+			.then(response=> {
+				handleResponse(response, dispatch);
+			})
+	}
+}
  
 export function fetchMesssages(){
 	return function(dispatch){
@@ -36,6 +45,8 @@ export function fetchMesssages(){
 			})
 	}
 }
+
+
 
 export function signoutUser(){
 	localStorage.removeItem('token')
