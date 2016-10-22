@@ -12,6 +12,7 @@ mongoose.connect('mongodb://localhost:auth/auth');
 
 app.use(morgan('combined'));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 app.use(cors());
 
 app.use(express.static('../client/'));
