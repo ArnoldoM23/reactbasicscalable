@@ -7,12 +7,17 @@ class SignIn extends Component {
 
 	handleFormSubmit({email, password}){
 		this.props.signIn({ email, password });
-		console.log(email, password)
 	}
 
 
 	renderAlert(){
-
+		if(this.props.errorMessage){
+			return(
+				<div>
+					<strong>Ooop!!</strong>{this.props.errorMessage}
+				</div>
+			)
+		}
 	}
 
 	render(){

@@ -7,7 +7,16 @@ class SignUp extends Component {
 	handleSubmitForm({email, password, confirmPassword}){
 		if (password === confirmPassword) {
 			this.props.signUp({email, password});
-			console.log(email, password, confirmPassword)
+		}
+	}
+
+	renderAlert(){
+		if(this.props.errorMesage){
+			return (
+				<div className="alert alert-danger">
+					<strong>Ooops!</strong>{this.props.errorMesage}
+				</div>
+			)
 		}
 	}
 
@@ -20,14 +29,17 @@ class SignUp extends Component {
 					<fieldset className='form-group'>
 						<label>Email:</label>
 						<input {...email} className='form-control'/>
+						{email.touched && email.error && <div className="error">{email.error}</div>}
 					</fieldset>
 					<fieldset className='form-group'>
 						<label>Password:</label>
 						<input {...password} type='password' className='form-control'/>
+						{password.touched && password.error && <div className="error">{password.error}</div>}
 					</fieldset>
 					<fieldset className='form-group'>
 						<label>Comfirm Password:</label>
 						<input {...confirmPassword} type='password' className='form-control'/>
+						{confirmPassword.touched && confirmPassword.error && <div className="error">{confirmPassword.error}</div>}
 					</fieldset>
 					<button action='submit' className='btn btn-primary'>Sign Up</button>
 				</form>
@@ -49,10 +61,10 @@ function validate (formProps){
 	if(!formProps.password){
 		error.password = 'Enter a password';
 	}
-	if(!form.confirmPassword){
+	if(!formProps.confirmPassword){
 		error.confirmPassword = 'Enter a confirmation pasword';
 	}
-	if (form.confirmPassword !== form.password) {
+	if (formProps.confirmPassword !== formProps.password) {
 		error.password = 'Enter a matching password'
 	}
 	return error;
@@ -61,5 +73,6 @@ function validate (formProps){
 
 export default reduxForm({
 	form: 'signup',
-	fields: ['email', 'password', 'confirmPassword']
+	fields: ['email', 'password', 'confirmPassword'],
+	validate
 }, mapStateToProps,actions)(SignUp);

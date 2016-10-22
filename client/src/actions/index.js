@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { browserHistory } from 'react-router';
-import { AUTH_USER, UNAUTH_USER,AUTH_ERROR,FETCH_MESSAGE } from './types';
+import { AUTH_USER, UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGE } from './types';
 
 const ROOT_URL = 'http://localhost:3090'
 
@@ -21,9 +21,29 @@ export function signUp({email, password}){
 			})
 	};
 };
+ 
+export function fetchMesssages(){
+	return function(dispatch){
+		const token = localStorage.getItem('token');
+		axios.get(ROOT_URL, {
+			headers: { authorization: token}
+		})
+			.then(response =>{
+				dispatch({
+					type: FETCH_MESSAGE,
+					payload: response.data.message
+				});
+			})
+	}
+}
+
+export function signoutUser(){
+	localStorage.removeItem('token')
+	return {type: UNAUTH_USER};
+}
 
 function handleResponse(response, dispatch){
 	dispatch({type: AUTH_USER})
-	browserHistory.push('/')
-	console.log(response.data)
+	localStorage.setItem('token', response.data.token);
+	browserHistory.push('/feature')
 };
