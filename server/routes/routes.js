@@ -18,8 +18,18 @@ module.exports = function(app){
 	// access was granted, the user will be logged in.  Otherwise,
 	// authentication has failed.
 	app.get('/auth/facebook/callback',
-	  passport.authenticate('facebook', {failureRedirect: '/login' }), 
+	  passport.authenticate('facebook',  {session: false}, {failureRedirect: '/signin' }), 
 	  function(req, res){
+	  	 res.writeHead(
+			   "204",
+			   "No Content",
+			   {
+			     "access-control-allow-origin": "*",
+			     "access-control-allow-methods": "GET, POST, OPTIONS",
+			     "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept",
+			     "content-length": 0
+			   }
+			 );
 	    res.json( { token: req.user.generateJWT() } )
 	    // res.redirect('/')
 	  });

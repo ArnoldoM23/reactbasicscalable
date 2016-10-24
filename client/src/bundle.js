@@ -27387,6 +27387,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var ROOT_URL = 'http://localhost:3090';
+
 	var SignIn = function (_Component) {
 		_inherits(SignIn, _Component);
 
@@ -27403,6 +27405,12 @@
 				var password = _ref.password;
 
 				this.props.signIn({ email: email, password: password });
+			}
+		}, {
+			key: 'handleFacebookLogin',
+			value: function handleFacebookLogin() {
+				console.log(this.props);
+				this.props.facebookLogin();
 			}
 		}, {
 			key: 'renderAlert',
@@ -27431,32 +27439,41 @@
 
 
 				return _react2.default.createElement(
-					'form',
-					{ onSubmit: handleSubmit(this.handleFormSubmit.bind(this)) },
+					'div',
+					null,
 					_react2.default.createElement(
-						'fieldset',
-						{ className: 'form-group' },
+						'form',
+						{ onSubmit: handleSubmit(this.handleFormSubmit.bind(this)) },
 						_react2.default.createElement(
-							'label',
-							null,
-							'Email:'
+							'fieldset',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Email:'
+							),
+							_react2.default.createElement('input', _extends({}, email, { className: 'form-control' }))
 						),
-						_react2.default.createElement('input', _extends({}, email, { className: 'form-control' }))
-					),
-					_react2.default.createElement(
-						'fieldset',
-						{ className: 'form-group' },
 						_react2.default.createElement(
-							'label',
-							null,
-							'Password:'
+							'fieldset',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Password:'
+							),
+							_react2.default.createElement('input', _extends({}, password, { type: 'password', className: 'form-control' }))
 						),
-						_react2.default.createElement('input', _extends({}, password, { type: 'password', className: 'form-control' }))
+						_react2.default.createElement(
+							'button',
+							{ action: 'submit', className: 'btn btn-primary' },
+							'Sign In'
+						)
 					),
 					_react2.default.createElement(
 						'button',
-						{ action: 'submit', className: 'btn btn-primary' },
-						'Sign In'
+						{ onClick: this.handleFacebookLogin.bind(this) },
+						'Facebook Login'
 					)
 				);
 			}
@@ -30562,6 +30579,7 @@
 	});
 	exports.signIn = signIn;
 	exports.signUp = signUp;
+	exports.facebookLogin = facebookLogin;
 	exports.fetchMesssages = fetchMesssages;
 	exports.signoutUser = signoutUser;
 
@@ -30599,6 +30617,14 @@
 		};
 	};
 
+	function facebookLogin() {
+		return function (dispatch) {
+			_axios2.default.get(ROOT_URL + '/auth/facebook').then(function (response) {
+				handleResponse(response, dispatch);
+			});
+		};
+	}
+
 	function fetchMesssages() {
 		return function (dispatch) {
 			var token = localStorage.getItem('token');
@@ -30609,7 +30635,6 @@
 					type: _types.FETCH_MESSAGE,
 					payload: response.data.message
 				});
-				console.log(response);
 			});
 		};
 	}

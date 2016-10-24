@@ -57,7 +57,7 @@ const facebookLogin = new FacebookStrategy({
           var newUser = new User();
           newUser.facebook_id = profile.id;
           newUser.name = profile.displayName;
-          newUser.username = profile.displayName.split(' ')[0];
+          newUser.email = profile.displayName.split(' ')[0];
 
           newUser.save(function(err){
             if (err) { throw err } 
@@ -66,6 +66,16 @@ const facebookLogin = new FacebookStrategy({
         }
       });
     });
+});
+
+passport.serializeUser(function(user, cb) {
+  console.log('serializeUser',user);
+  cb(null, user);
+});
+// deserialize the data
+passport.deserializeUser(function(user, cb) {
+  console.log('deserializeUser',user);
+  cb(null, user);
 });
 
 
