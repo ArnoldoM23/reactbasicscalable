@@ -25,8 +25,10 @@ sequelize
   .catch(function (err) {
     console.log('Unable to connect to the database:', err);
   })
+  
 // This is for deployment when using mongo
 // mongoose.connect('mongodb://<databasehere>:<passwordhere>5@dso12345.mlab.com:56789/<databasename>');
+
 // This is for development
 // mongoose.connect('mongodb://localhost:auth/auth');
 
