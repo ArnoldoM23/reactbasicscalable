@@ -1,6 +1,7 @@
 const passport = require('passport');
+const bcrypt = require('bcrypt-nodejs');
 const config = require('../config');
-const User = require('../db/mongodb');
+const User = require('../db/sql/models/user.js');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -11,18 +12,17 @@ const LocalStrategy = require('passport-local');
 const localOptions = { usernameField: 'email'};
 
 const localLogin = new LocalStrategy(localOptions, function(email, password, done){
-	// look for user by email 
-	User.findOne({email: email}, function(err, user){
-		// handle errors
-		if (err) { return done(err); }
-		if (!user) { return done(null, false); }
-// compare passords
-		user.comparePassword(password, function(err, match){
-			if (err) { return done(err); }
-			if (!match) { return done(null, false); }
-			return done(null, user) 
-		});
-	});
+
+  User.findOne( { where: { email: email } } )
+    .then(user => {
+
+      bcrypt.compare(password, user.dataValues.password, function(err, match){
+        if(err){ return done(err); }
+        if (!match) { return done(null, false); }
+        done(null, user);
+      });
+    })
+    .catch(err => done(err) );
 });
 
 const jwtOptions = {
@@ -32,39 +32,35 @@ const jwtOptions = {
 
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done){
 	// find a user in the database by id.
-	User.findById(payload._id, function(err, user){
-		if (err) { return done(errr);}
-
-		return user ? done(null, user) : done(null, false)
-	});
+	User.findOne( { where: {user_id: payload.id} } )
+    .then(user => {
+  		return user ? done(null, user) : done(null, false);
+  	})
+    .catch(err => done(err));
 });
 
 const facebookLogin = new FacebookStrategy({
-    clientID: '334626160209344',
-    clientSecret: 'f9eed647008c5b6495f56bc70951ae21',
+    // 'ENTER_CLIENT_ID'
+    clientID: 'ENTER_CLIENT_ID',
+    //  'ENTER_CLIENT_SECRET'
+    clientSecret: 'ENTER_CLIENT_SECRET',
     // Make sure that the name you give your callback matches the callback on the server.
     callbackURL: "http://localhost:3090/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
     process.nextTick(function(){
       // look for user in the database.
-      User.findOne({facebook_id: profile.id}, function(err, user){
-        if(err){ return cb(err)}
-        if (user) {
-          return cb(null, user)
-        } else{
-          
-          var newUser = new User();
-          newUser.facebook_id = profile.id;
-          newUser.name = profile.displayName;
-          newUser.email = profile.displayName.split(' ')[0];
-
-          newUser.save(function(err){
-            if (err) { throw err } 
-          })
-          return cb(null, newUser); 
-        }
-      });
+      User.findOne( { where: {facebook_id: profile.id} })
+        .then(user => {
+          if (user) {
+            return cb(null, user)
+          } else{
+            User.create({ facebook_id: profile.id, name: profile.displayName, email: profile.displayName.split(' ')[0] })
+                .then(user =>  { cb(null, user) })
+                .catch(err => cb(err));
+          }
+        })
+        .catch(err => cb(err));
     });
 });
 

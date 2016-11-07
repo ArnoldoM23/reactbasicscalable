@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jwt-simple');
-const config = require('../config');
+const config = require('../../../config');
 
 
 const UserSchema = new Schema({
@@ -33,10 +33,6 @@ UserSchema.methods.comparePassword = function(candidatePassword, callback){
 	});
 };
 
-// function getUserToken(user){
-// 	const timeStamp = new Date().getTime();
-// 	return jwt.encode({_id: user.id, exp: parseInt(exp.getTime() / 1000)}, config.secret);
-// };
 
 UserSchema.methods.generateJWT = function() {
   // set expiration to 60 days
