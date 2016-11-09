@@ -22,12 +22,9 @@ export function signUp({email, password}){
 	};
 };
 
-export function facebookLogin(){
-	return function(dispatch){
-		axios.get(`${ROOT_URL}/auth/facebook`)
-			.then(response=> {
-				handleResponse(response, dispatch);
-			})
+export function facebookAuth(){
+	return {
+		type: AUTH_USER
 	}
 }
  

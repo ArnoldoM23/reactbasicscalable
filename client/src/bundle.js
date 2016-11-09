@@ -27407,12 +27407,6 @@
 				this.props.signIn({ email: email, password: password });
 			}
 		}, {
-			key: 'handleFacebookLogin',
-			value: function handleFacebookLogin() {
-				console.log(this.props);
-				this.props.facebookLogin();
-			}
-		}, {
 			key: 'renderAlert',
 			value: function renderAlert() {
 				if (this.props.errorMessage) {
@@ -27471,8 +27465,8 @@
 						)
 					),
 					_react2.default.createElement(
-						'button',
-						{ onClick: this.handleFacebookLogin.bind(this) },
+						'a',
+						{ href: ROOT_URL + '/auth/facebook' },
 						'Facebook Login'
 					)
 				);
@@ -30579,7 +30573,7 @@
 	});
 	exports.signIn = signIn;
 	exports.signUp = signUp;
-	exports.facebookLogin = facebookLogin;
+	exports.facebookAuth = facebookAuth;
 	exports.fetchMesssages = fetchMesssages;
 	exports.signoutUser = signoutUser;
 
@@ -30617,11 +30611,9 @@
 		};
 	};
 
-	function facebookLogin() {
-		return function (dispatch) {
-			_axios2.default.get(ROOT_URL + '/auth/facebook').then(function (response) {
-				handleResponse(response, dispatch);
-			});
+	function facebookAuth() {
+		return {
+			type: _types.AUTH_USER
 		};
 	}
 
@@ -32538,6 +32530,16 @@
 			}
 
 			_createClass(Authentication, [{
+				key: 'componentWillMount',
+				value: function componentWillMount() {
+					// This will grab the token from the url store in the localstorage
+					if (window.location.search.indexOf('token') !== -1) {
+						var token = window.location.search.slice(7);
+						window.localStorage.setItem('token', token);
+						this.props.facebookAuth();
+					}
+				}
+			}, {
 				key: 'componentDidMount',
 				value: function componentDidMount() {
 					if (!this.props.authenticated) {
@@ -32570,7 +32572,7 @@
 			return { authenticated: state.auth.authenticated };
 		}
 
-		return (0, _reactRedux.connect)(mapStateToProps)(Authentication);
+		return (0, _reactRedux.connect)(mapStateToProps, actions)(Authentication);
 	};
 
 	var _react = __webpack_require__(2);
@@ -32578,6 +32580,12 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _reactRedux = __webpack_require__(159);
+
+	var _actions = __webpack_require__(299);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
