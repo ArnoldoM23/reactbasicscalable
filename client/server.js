@@ -4,7 +4,6 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
-const cors = require('cors');
 var path = require('path');
 
 
@@ -19,7 +18,6 @@ app.all('/*', function(req, res, next) {
 
 app.use(morgan('combined'));
 app.use(bodyParser.json());
-app.use(cors())
 app.use(express.static(publicPath));
 
 app.get('*', (req,res) =>{
