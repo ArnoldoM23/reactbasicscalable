@@ -10,8 +10,6 @@ module.exports = function(app){
 	app.get('/', requireAuth, function(req, res, next){
 		res.send({message: "But it work tho"})
 	});
-
- 
 	// Local sign in and sign up routes
 	app.post('/signin', requireSignin, Auth.signin);
 	app.post('/signup', Auth.signup)
@@ -23,5 +21,14 @@ module.exports = function(app){
 	  	let token = req.user.generateJWT()
 	  	// This will redirect back to home page and add the token to the url
 	    res.redirect('http://localhost:3000/?token=' + token)
+	  });
+	// ================= Github login =======================
+	app.get('/auth/github',
+	  passport.authenticate('github', { scope: [ 'user:email' ] }));
+	app.get('/auth/github/callback', 
+	  passport.authenticate('github', { failureRedirect: 'http://localhost:3000/signin' }),
+	  function(req, res) {
+	    const token = req.user.generateJWT()
+	    res.redirect('http://localhost:3000/?token=' + token);
 	  });
 };

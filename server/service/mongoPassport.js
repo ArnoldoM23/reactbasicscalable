@@ -27,7 +27,7 @@ const localLogin = new LocalStrategy(localOptions, function(email, password, don
 
 const jwtOptions = {
 	jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-	secretOrKey: config.secret
+	secretOrKey: config.SECRET
 };
 
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done){
@@ -80,7 +80,37 @@ passport.deserializeUser(function(user, cb) {
   cb(null, user);
 });
 
+const githubLogin = new GitHubStrategy({
+    clientID: "ENTER_CLIENT_ID",
+    clientSecret: 'ENTER_CLIENT_SECRET',
+    callbackURL: "http://localhost:3090/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+      User.findOne({facebook_id: profile.id}, function(err, user){
+        if(err){ return done(err)}
+        if (user) {
+          return done(null, user)
+        } else{
+          console.log(profile)
+          let newUser = new User();
+          newUser.facebook_id = profile.id;
+          newUser.name = profile.displayName;
+          newUser.email = profile.emails[0].value;
+
+          newUser.save(function(err){
+            if (err) { throw err } 
+          })
+          return done(null, newUser); 
+        }
+      });
+    });
+  }
+);
+
 
 passport.use(localLogin);
 passport.use(jwtLogin);
 passport.use(facebookLogin)
+passport.use(githubLogin)

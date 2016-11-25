@@ -1,7 +1,7 @@
 const passport = require('passport');
 const bcrypt = require('bcrypt-nodejs');
 const config = require('../config');
-const User = require('../db/sql/models/user.js');
+const models = require('../db/sql/models');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -12,10 +12,8 @@ const LocalStrategy = require('passport-local');
 const localOptions = { usernameField: 'email'};
 
 const localLogin = new LocalStrategy(localOptions, function(email, password, done){
-
-  User.findOne( { where: { email: email } } )
+  models.users.findOne( { where: { email: email } } )
     .then(user => {
-
       bcrypt.compare(password, user.dataValues.password, function(err, match){
         if(err){ return done(err); }
         if (!match) { return done(null, false); }
@@ -27,12 +25,12 @@ const localLogin = new LocalStrategy(localOptions, function(email, password, don
 
 const jwtOptions = {
 	jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-	secretOrKey: config.secret
+	secretOrKey: config.SECRET
 };
 
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done){
 	// find a user in the database by id.
-	User.findOne( { where: {user_id: payload.id} } )
+	models.users.findOne( { where: {user_id: payload.id} } )
     .then(user => {
   		return user ? done(null, user) : done(null, false);
   	})
@@ -50,12 +48,12 @@ const facebookLogin = new FacebookStrategy({
   function(accessToken, refreshToken, profile, cb) {
     process.nextTick(function(){
       // look for user in the database.
-      User.findOne( { where: {facebook_id: profile.id} })
+      models.users.findOne( { where: {facebook_id: profile.id} })
         .then(user => {
           if (user) {
             return cb(null, user)
           } else{
-            User.create({ facebook_id: profile.id, name: profile.displayName, email: profile.displayName.split(' ')[0] })
+            models.users.create({ facebook_id: profile.id, name: profile.displayName, email: profile.displayName.split(' ')[0] })
                 .then(user =>  { cb(null, user) })
                 .catch(err => cb(err));
           }
@@ -74,7 +72,30 @@ passport.deserializeUser(function(user, cb) {
   cb(null, user);
 });
 
+const githubLogin = new GitHubStrategy({
+    clientID: "ENTER_CLIENT_ID",
+    clientSecret: 'ENTER_CLIENT_SECRET',
+    callbackURL: "http://localhost:3090/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+      models.users.findOne( { where: {google_id: profile.id} })
+        .then(user => {
+          if (user) {
+            return done(null, user)
+          } else{
+            models.users.create({ google_id: profile.id, name: profile.displayName, email: profile.email })
+                .then(user =>  { done(null, user) })
+                .catch(err => done(err));
+          }
+        })
+        .catch(err => done(err));
+    });
+  }
+);
 
 passport.use(localLogin);
 passport.use(jwtLogin);
 passport.use(facebookLogin)
+passport.use(githubLogin)

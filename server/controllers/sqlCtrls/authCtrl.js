@@ -2,8 +2,8 @@
 const jwt = require('jwt-simple');
 const bcrypt = require('bcrypt-nodejs');
 const config = require('../../config');
-const User = require('../../db/sql/models/user.js');
-
+const models = require("../../db/sql/models");
+const sequelize = require('../../db/sql/models/index').sequelize;
 // TODO: Reafactor to into user model
 function tokenForUser(user){
 	var today = new Date();
@@ -11,14 +11,13 @@ function tokenForUser(user){
   exp.setDate(today.getDate() + 60);
 
 	const timestamp = parseInt(exp.getTime() / 1000);
-	return jwt.encode({ id: user.user_id, iat: timestamp }, config.secret)
+	return jwt.encode({ id: user.user_id, iat: timestamp }, process.env.SECRET || config.SECRET)
 }
 
 
 // SING IN ==============================
 exports.signin = function(req, res, next){
-	console.log("WHAT IS REQ USER", req.user)
-	res.send({ token: tokenForUser(req.user) });
+	res.send({ token: tokenForUser(req.user), user: req.user });
 }
 
 
@@ -33,9 +32,7 @@ exports.signup = function(req, res, next){
 		return res.status(422).json({ error: "You must provide email and password "})
 	}
 
-
-
-	User.findOne( { where: { email: email } })
+	models.users.findOne( { where: { email: email } })
     .then(user => {
       if (user) {
         return next(null, user)
@@ -46,7 +43,7 @@ exports.signup = function(req, res, next){
 					bcrypt.hash(password, salt, null, function(err, hash){
 						if (err) { return next(err); }
 						// Create new user
-						User.create({  password: hash, email: email })
+						models.users.create({  password: hash, email: email })
 	            .then(user =>  { res.json({token: tokenForUser(user) }) })
 	            .catch(err => next(err) );
 						
@@ -56,5 +53,4 @@ exports.signup = function(req, res, next){
       }
   	})
   	.catch(err => next(err))
-
 }
