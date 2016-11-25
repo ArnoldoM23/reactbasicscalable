@@ -2,7 +2,8 @@ import axios from 'axios';
 import { browserHistory } from 'react-router';
 import { AUTH_USER, UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGE } from './types';
 
-const ROOT_URL = 'http://localhost:3090'
+const ROOT_URL = 'http://localhost:3090'//developmet
+// const ROOT_URL = 'https://your_domain.com'//deployment
 
 export function signIn({email, password}){
 	return function(dispatch){
@@ -42,8 +43,6 @@ export function fetchMesssages(){
 			})
 	}
 }
-
-
 
 export function signoutUser(){
 	localStorage.removeItem('token')

@@ -36,7 +36,8 @@ class SignIn extends Component {
 					</fieldset>
 					<button action='submit' className='btn btn-primary'>Sign In</button>
 				</form>
-				<a href={`${ROOT_URL}/auth/facebook`}>Facebook Login</a>
+				<a href={`${ROOT_URL}/auth/facebook`}><button>Facebook Login</button></a>
+				<a href={`${ROOT_URL}/auth/github`}><button>Github Login</button></a>
 			</div>
 		);
 	}

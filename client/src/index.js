@@ -31,7 +31,7 @@ ReactDOM.render(
 				<IndexRoute component={FrontPage} />
 				<Route path='/signin' component={SignIn} />
 				<Route path='/signup' component={SignUp}/>
-				<Route path='/signout' component={SignOut}/>
+				<Route path='/signout' component={ SignOut } />
 				<Route path='/feature' component={Authenticate(Feature)} />
 			</Route>
 		</Router>
