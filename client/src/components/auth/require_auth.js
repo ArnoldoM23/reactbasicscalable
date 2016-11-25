@@ -8,15 +8,6 @@ export default function(ComposedComponent){
 			router: React.PropTypes.object
 		}
 
-		componentWillMount(){
-			// This will grab the token from the url store in the localstorage
-			if (window.location.search.indexOf('token') !== -1) {
-				const token = window.location.search.slice(7)
-				window.localStorage.setItem('token', token)
-				this.props.facebookAuth()
-			}
-		}
-
 		componentDidMount(){
 			if (!this.props.authenticated) {
 				this.context.router.push('/');
