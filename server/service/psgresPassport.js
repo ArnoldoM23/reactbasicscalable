@@ -80,12 +80,12 @@ const githubLogin = new GitHubStrategy({
   function(accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      models.users.findOne( { where: {google_id: profile.id} })
+      models.users.findOne( { where: {github_id: profile.id} })
         .then(user => {
           if (user) {
             return done(null, user)
           } else{
-            models.users.create({ google_id: profile.id, name: profile.displayName, email: profile.email })
+            models.users.create({ github_id: profile.id, name: profile.displayName, email: profile.email })
                 .then(user =>  { done(null, user) })
                 .catch(err => done(err));
           }
