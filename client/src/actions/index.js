@@ -11,6 +11,7 @@ export function signIn({email, password}){
 			.then(response => {
 				handleResponse(response, dispatch)
 			})
+			.catch(err => console.log(err))
 	};
 };
 
@@ -20,6 +21,7 @@ export function signUp({email, password}){
 			.then(response => {
 				handleResponse(response, dispatch);
 			})
+			.catch(err => console.log(err))
 	};
 };
 
@@ -41,6 +43,7 @@ export function fetchMesssages(){
 					payload: response.data.message
 				});
 			})
+			.catch(err => console.log(err))
 	}
 }
 

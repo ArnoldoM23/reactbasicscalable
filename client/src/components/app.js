@@ -8,12 +8,11 @@ class App extends Component {
 	componentWillMount(){
 		// This will grab the token from the url store in the localstorage
 		if (window.location.search.indexOf('token') !== -1) {
-			const token = window.location.search.slice(7)
-			window.localStorage.setItem('token', token)
-			this.props.facebookAuth()
+			const token = window.location.search.slice(7);
+			window.localStorage.setItem('token', token);
+			this.props.facebookAuth();
 		}
 	}
-
 
 	render(){
 		return (
